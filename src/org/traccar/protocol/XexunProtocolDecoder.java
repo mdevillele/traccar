@@ -61,6 +61,8 @@ public class XexunProtocolDecoder extends BaseProtocolDecoder {
             .number("(d+),")                     // satellites
             .number("(-?d+.d+)?,")               // altitude
             .number("[FL]:(d+.d+)V")             // power
+            .expression("([^,]+)?,").optional()  // additional power
+            .number("([01])")                    //charge
             .any()
             .compile();
 
@@ -144,6 +146,11 @@ public class XexunProtocolDecoder extends BaseProtocolDecoder {
             position.setAltitude(parser.nextDouble(0));
 
             position.set(Position.KEY_POWER, parser.nextDouble(0));
+            
+            parser.next();
+
+            position.set(Position.KEY_CHARGE, parser.next().equals("1"));
+            
         }
 
         return position;
